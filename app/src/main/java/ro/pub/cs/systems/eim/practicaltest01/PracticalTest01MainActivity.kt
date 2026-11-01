@@ -1,6 +1,7 @@
 package ro.pub.cs.systems.eim.practicaltest01
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -17,6 +18,11 @@ class PracticalTest01MainActivity : AppCompatActivity() {
     private lateinit var buttonRight: Button
 
     private val buttonClickListener = ButtonClickListener()
+
+    companion object {
+        const val LEFT_COUNT = "left_count"
+        const val RIGHT_COUNT = "right_count"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +57,22 @@ class PracticalTest01MainActivity : AppCompatActivity() {
                     editTextRight.setText(count.toString())
                 }
             }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(LEFT_COUNT, editTextLeft.text.toString())
+        outState.putString(RIGHT_COUNT, editTextRight.text.toString())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (savedInstanceState.containsKey(LEFT_COUNT)) {
+            editTextLeft.setText(savedInstanceState.getString(LEFT_COUNT))
+        }
+        if (savedInstanceState.containsKey((RIGHT_COUNT))) {
+            editTextRight.setText(savedInstanceState.getString(RIGHT_COUNT))
         }
     }
 }
