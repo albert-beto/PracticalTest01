@@ -36,3 +36,8 @@ google-services.json
 
 # macOS
 .DS_Store
+
+#fisiere explicite
+*.class
+*.dex
+*.ap_
