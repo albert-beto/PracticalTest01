@@ -1,11 +1,15 @@
 package ro.pub.cs.systems.eim.practicaltest01
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,7 +21,15 @@ class PracticalTest01MainActivity : AppCompatActivity() {
     private lateinit var buttonLeft: Button
     private lateinit var buttonRight: Button
 
+    private lateinit var buttonNavigate: Button
+
     private val buttonClickListener = ButtonClickListener()
+
+    private val secondaryActivityLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result -> Toast.makeText(this, "The activity returned with the result ${result.resultCode}",
+            Toast.LENGTH_LONG).show()
+        }
 
 
 
@@ -35,9 +47,11 @@ class PracticalTest01MainActivity : AppCompatActivity() {
         editTextRight = findViewById(R.id.EditTextRight)
         buttonLeft = findViewById(R.id.ButtonLeft)
         buttonRight = findViewById(R.id.ButtonRight)
+        buttonNavigate = findViewById(R.id.ButtonNavigate)
 
         buttonLeft.setOnClickListener(buttonClickListener)
         buttonRight.setOnClickListener(buttonClickListener)
+        buttonNavigate.setOnClickListener(buttonClickListener)
 
 
     }
@@ -52,6 +66,13 @@ class PracticalTest01MainActivity : AppCompatActivity() {
                 R.id.ButtonRight -> {
                     val count = editTextRight.text.toString().toInt() + 1
                     editTextRight.setText(count.toString())
+                }
+                R.id.ButtonNavigate -> {
+                    val intent = Intent(this@PracticalTest01MainActivity,
+                        PracticalTest01SecondaryActivity::class.java)
+                    val total = editTextLeft.text.toString().toInt() + editTextRight.text.toString().toInt()
+                    intent.putExtra(Constants.NUMBER_OF_CLICKS, total)
+                    secondaryActivityLauncher.launch(intent)
                 }
             }
         }
