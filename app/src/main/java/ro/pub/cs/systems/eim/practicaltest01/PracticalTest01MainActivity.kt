@@ -1,8 +1,12 @@
 package ro.pub.cs.systems.eim.practicaltest01
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -11,6 +15,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -24,6 +29,10 @@ class PracticalTest01MainActivity : AppCompatActivity() {
     private lateinit var buttonNavigate: Button
 
     private val buttonClickListener = ButtonClickListener()
+
+    private val messageBrpadcastReceiver = MessageBroadcastReciever()
+
+    private val intentFilter = IntentFilter()
 
     private val secondaryActivityLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -55,6 +64,9 @@ class PracticalTest01MainActivity : AppCompatActivity() {
         buttonRight.setOnClickListener(buttonClickListener)
         buttonNavigate.setOnClickListener(buttonClickListener)
 
+        for (action in Constants.ACTIONS)
+            intentFilter.addAction(action)
+
 
     }
 
@@ -80,6 +92,13 @@ class PracticalTest01MainActivity : AppCompatActivity() {
                 }
             }
 
+        }
+    }
+
+    private inner class MessageBroadcastReciever: BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val message = intent.getStringExtra(Constants.BROADCAST_EXTRA)
+            Log.d(Constants.TAG, "Received [${intent.action}]: $message")
         }
     }
 
@@ -116,5 +135,20 @@ class PracticalTest01MainActivity : AppCompatActivity() {
         val intent = Intent(this, PracticalTest01Service::class.java)
         stopService(intent)
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ContextCompat.registerReceiver(
+            this,
+            messageBrpadcastReceiver,
+            intentFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
+    override fun onPause() {
+        unregisterReceiver(messageBrpadcastReceiver)
+        super.onPause()
     }
 }
