@@ -31,6 +31,8 @@ class PracticalTest01MainActivity : AppCompatActivity() {
             Toast.LENGTH_LONG).show()
         }
 
+    private var serviceStarted = false
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +64,12 @@ class PracticalTest01MainActivity : AppCompatActivity() {
                 R.id.ButtonLeft -> {
                     val count = editTextLeft.text.toString().toInt() + 1
                     editTextLeft.setText(count.toString())
+                    startServiceIfNeeded()
                 }
                 R.id.ButtonRight -> {
                     val count = editTextRight.text.toString().toInt() + 1
                     editTextRight.setText(count.toString())
+                    startServiceIfNeeded()
                 }
                 R.id.ButtonNavigate -> {
                     val intent = Intent(this@PracticalTest01MainActivity,
@@ -75,6 +79,7 @@ class PracticalTest01MainActivity : AppCompatActivity() {
                     secondaryActivityLauncher.launch(intent)
                 }
             }
+
         }
     }
 
@@ -92,5 +97,24 @@ class PracticalTest01MainActivity : AppCompatActivity() {
         if (savedInstanceState.containsKey(Constants.RIGHT_COUNT)) {
             editTextRight.setText(savedInstanceState.getString(Constants.RIGHT_COUNT))
         }
+    }
+
+    private fun startServiceIfNeeded() {
+        val left = editTextLeft.text.toString().toInt()
+        val right = editTextRight.text.toString().toInt()
+
+        if (left + right > Constants.NUMBER_OF_CLICKS_THRESHOLD && !serviceStarted) {
+            val intent = Intent(this, PracticalTest01Service::class.java)
+            intent.putExtra(Constants.FIRST_NUMBER, left)
+            intent.putExtra(Constants.SECOND_NUMBER, right)
+            startService(intent)
+            serviceStarted = true
+        }
+    }
+
+    override fun onDestroy() {
+        val intent = Intent(this, PracticalTest01Service::class.java)
+        stopService(intent)
+        super.onDestroy()
     }
 }
