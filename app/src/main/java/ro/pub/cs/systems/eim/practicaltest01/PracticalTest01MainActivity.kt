@@ -19,10 +19,7 @@ class PracticalTest01MainActivity : AppCompatActivity() {
 
     private val buttonClickListener = ButtonClickListener()
 
-    companion object {
-        const val LEFT_COUNT = "left_count"
-        const val RIGHT_COUNT = "right_count"
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,17 +59,17 @@ class PracticalTest01MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(LEFT_COUNT, editTextLeft.text.toString())
-        outState.putString(RIGHT_COUNT, editTextRight.text.toString())
+        outState.putString(Constants.LEFT_COUNT, editTextLeft.text.toString())
+        outState.putString(Constants.RIGHT_COUNT, editTextRight.text.toString())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        if (savedInstanceState.containsKey(LEFT_COUNT)) {
-            editTextLeft.setText(savedInstanceState.getString(LEFT_COUNT))
+        if (savedInstanceState.containsKey(Constants.LEFT_COUNT)) {
+            editTextLeft.setText(savedInstanceState.getString(Constants.LEFT_COUNT))
         }
-        if (savedInstanceState.containsKey((RIGHT_COUNT))) {
-            editTextRight.setText(savedInstanceState.getString(RIGHT_COUNT))
+        if (savedInstanceState.containsKey(Constants.RIGHT_COUNT)) {
+            editTextRight.setText(savedInstanceState.getString(Constants.RIGHT_COUNT))
         }
     }
 }
